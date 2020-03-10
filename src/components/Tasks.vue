@@ -4,7 +4,7 @@
       <div class="col-sm-10">
         <h1>Tasks</h1>
         <hr><br><br>
-        <alert message="hi"></alert>
+        <alert :message="message"></alert>
         <button type="button" class="btn btn-success btn-sm" v-b-modal.task-modal> Add Task</button>
         <br><br>
         <table class="table table-hover">
@@ -86,6 +86,7 @@ export default {
         owner: '',
         complete: [],
       },
+      message: '',
     };
   },
   components: {
@@ -108,6 +109,7 @@ export default {
       axios.post(path, payload)
         .then(() => {
           this.getTasks();
+          this.message = 'Task added!';
         })
         .catch((error) => {
           // es-lint-disable-next-line
