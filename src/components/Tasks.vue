@@ -4,7 +4,7 @@
       <div class="col-sm-10">
         <h1>Tasks</h1>
         <hr><br><br>
-        <alert></alert>
+        <alert message="hi"></alert>
         <button type="button" class="btn btn-success btn-sm" v-b-modal.task-modal> Add Task</button>
         <br><br>
         <table class="table table-hover">
