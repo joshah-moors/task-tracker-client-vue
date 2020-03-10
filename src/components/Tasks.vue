@@ -4,6 +4,7 @@
       <div class="col-sm-10">
         <h1>Tasks</h1>
         <hr><br><br>
+        <alert></alert>
         <button type="button" class="btn btn-success btn-sm" v-b-modal.task-modal> Add Task</button>
         <br><br>
         <table class="table table-hover">
@@ -74,6 +75,7 @@
 
 <script>
 import axios from 'axios';
+import Alert from './Alert.vue';
 
 export default {
   data() {
@@ -85,6 +87,9 @@ export default {
         complete: [],
       },
     };
+  },
+  components: {
+    alert: Alert,
   },
   methods: {
     getTasks() {
