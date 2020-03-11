@@ -4,7 +4,7 @@
       <div class="col-sm-10">
         <h1>Tasks</h1>
         <hr><br><br>
-        <alert :message="message"></alert>
+        <alert :message="message" v-if="showMessage"></alert>
         <button type="button" class="btn btn-success btn-sm" v-b-modal.task-modal> Add Task</button>
         <br><br>
         <table class="table table-hover">
@@ -87,6 +87,7 @@ export default {
         complete: [],
       },
       message: '',
+      showMessage: false,
     };
   },
   components: {
@@ -110,9 +111,10 @@ export default {
         .then(() => {
           this.getTasks();
           this.message = 'Task added!';
+          this.showMessage = true;
         })
         .catch((error) => {
-          // es-lint-disable-next-line
+          // eslint-disable-next-line
           console.log(error);
           this.getTasks();
         });
