@@ -32,7 +32,11 @@
                           @click="editTask(task)">
                     Update
                   </button>
-                  <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                  <button type="button" 
+                          class="btn btn-danger btn-sm"
+                          @click="onDeleteTask(task)">
+                    Delete
+                  </button>
                 </div>
               </td>
             </tr>
@@ -187,6 +191,23 @@ export default {
         .then(() => {
           this.getTasks();
           this.message = 'Task updated!';
+          this.showMessage = true;
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+          this.getTasks();
+        });
+    },
+    onDeleteTask(task) {
+      this.removetask(task.id);
+    }
+    removeTask(taskID) {
+      const path = `http://localhost:5000/tasks/${taskID}`;
+      axios.delete(path)
+        .then(() => {
+          this.getTasks();
+          this.message = 'Task removed!';
           this.showMessage = true;
         })
         .catch((error) => {
