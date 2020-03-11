@@ -4,7 +4,7 @@
       <div class="col-sm-10">
         <h1>Tasks</h1>
         <hr><br><br>
-        <alert :message="message"></alert>
+        <alert :message="message" v-if="showMessage"></alert>
         <button type="button" class="btn btn-success btn-sm" v-b-modal.task-modal> Add Task</button>
         <br><br>
         <table class="table table-hover">
@@ -26,7 +26,12 @@
               </td>
               <td>
                 <div class="btn-group" role="group">
-                  <button type="button" class="btn btn-warning btn-sm">Update</button>
+                  <button type="button"
+                          class="btn btn-warning btn-sm"
+                          v-b-modal.task-update-modal
+                          @click="editTask(task)">
+                    Update
+                  </button>
                   <button type="button" class="btn btn-danger btn-sm">Delete</button>
                 </div>
               </td>
@@ -69,6 +74,42 @@
         <b-button type="reset" variant="danger">Reset</b-button>
       </b-form>
     </b-modal>
+    <b-modal ref="editTaskModal"
+             id="task-update-modal"
+             title="Update"
+             hide-footer>
+      <b-form @submit="onSubmitUpdate" @reset="onResetUpdate" class="w-100">
+        <b-form-group id="form-title-edit-group"
+                    label="Title:"
+                    label-for="form-title-edit-input">
+          <b-form-input id="form-title-edit-input"
+                        type="text"
+                        v-model="editForm.title"
+                        required
+                        placeholder="Enter title">
+          </b-form-input>
+        </b-form-group>
+        <b-form-group id="form-owner-edit-group"
+                      label="Owner:"
+                      label-for="form-owner-edit-input">
+          <b-form-input id="form-owner-edit-input"
+                        type="text"
+                        v-model="editForm.owner"
+                        required
+                        placeholder="Enter owner">
+          </b-form-input>
+        </b-form-group>
+        <b-form-group id="form-complete-edit-group">
+          <b-form-checkbox-group v-model="editForm.complete" id="form-checks">
+            <b-form-checkbox value="true">Complete?</b-form-checkbox>
+          </b-form-checkbox-group>
+        </b-form-group>
+        <b-button-group>
+          <b-button type="submit" variant="primary">Update</b-button>
+          <b-button type="reset" variant="danger">Cancel</b-button>
+        </b-button-group>
+      </b-form>
+    </b-modal>
   </div>
 </template>
 
@@ -87,6 +128,13 @@ export default {
         complete: [],
       },
       message: '',
+      showMessage: false,
+      editForm: {
+        id: '',
+        title: '',
+        owner: '',
+        complete: [],
+      },
     };
   },
   components: {
@@ -110,10 +158,40 @@ export default {
         .then(() => {
           this.getTasks();
           this.message = 'Task added!';
+          this.showMessage = true;
         })
         .catch((error) => {
-          // es-lint-disable-next-line
+          // eslint-disable-next-line
           console.log(error);
+          this.getTasks();
+        });
+    },
+    editTask(task) {
+      this.editForm = task;
+    },
+    onSubmitUpdate(evt) {
+      evt.preventDefault();
+      this.$refs.editTaskModal.hide();
+      let complete = false;
+      if (this.editForm.complete[0]) complete = true;
+      const payload = {
+        title: this.editForm.title,
+        owner: this.editForm.owner,
+        complete,
+      };
+      this.updateTask(payload, this.editTask.id);
+    },
+    updateTask(payload, taskID) {
+      const path = `http://localhost:5000/tasks/${taskID}`;
+      axios.put(path, payload)
+        .then(() => {
+          this.getTasks();
+          this.message = 'Task updated!';
+          this.showMessage = true;
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
           this.getTasks();
         });
     },
@@ -121,6 +199,10 @@ export default {
       this.addTaskForm.title = '';
       this.addTaskForm.owner = '';
       this.addTaskForm.complete = [];
+      this.editForm.id = '';
+      this.editForm.title = '';
+      this.editForm.owner = '';
+      this.editForm.complete = [];
     },
     onSubmit(evt) {
       evt.preventDefault();
@@ -139,6 +221,12 @@ export default {
       evt.preventDefault();
       this.$refs.addTaskForm.hide();
       this.initForm();
+    },
+    onResetUpdate(evt) {
+      evt.preventDefault();
+      this.$refs.editTaskModal.hide();
+      this.initForm();
+      this.getTasks();
     },
   },
   created() {
