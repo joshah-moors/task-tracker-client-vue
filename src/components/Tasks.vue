@@ -179,7 +179,7 @@ export default {
         owner: this.editForm.owner,
         complete,
       };
-      this.updateTask(payload, this.editTask.id);
+      this.updateTask(payload, this.editForm.id);
     },
     updateTask(payload, taskID) {
       const path = `http://localhost:5000/tasks/${taskID}`;
