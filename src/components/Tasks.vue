@@ -32,7 +32,7 @@
                           @click="editTask(task)">
                     Update
                   </button>
-                  <button type="button" 
+                  <button type="button"
                           class="btn btn-danger btn-sm"
                           @click="onDeleteTask(task)">
                     Delete
@@ -200,8 +200,8 @@ export default {
         });
     },
     onDeleteTask(task) {
-      this.removetask(task.id);
-    }
+      this.removeTask(task.id);
+    },
     removeTask(taskID) {
       const path = `http://localhost:5000/tasks/${taskID}`;
       axios.delete(path)
